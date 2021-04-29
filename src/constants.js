@@ -1,0 +1,1 @@
+export const MAIN_DELAY = 600

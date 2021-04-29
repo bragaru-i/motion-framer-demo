@@ -11,10 +11,10 @@ npm i framer-motion
 ```
 
  Also add  **React implementation of the Intersection Observer API** aka  **react-intersection-observer** (nearly 450k downloads per week). What it does: 
-React implementation of the Intersection Observer API to tell you when an element enters or leaves the viewport. Contains both a Hooks, render props and plain children implementation.
+React implementation of the Intersection Observer API to tell you when an element enters or leaves the viewport. Contains both a Hooks, render props and plain children implementation. We need lodash too. Otherwise we need to write by our own a debounce function
 
 ```
-npm i react-intersection-observer
+npm i react-intersection-observer lodash
 ```
 
 Well, lets do some clean up and start to code. 
@@ -72,6 +72,73 @@ Giving them a width and height of 100%, also setting them id. id must be differe
           background-color:  blueviolet;
         }
 
-      
+    and of course we switch off scrolling on page 
 
-1. 
+        body {
+             overflow: hidden;
+        }
+
+2. Now, we have sections, we have our packages setted up, let's do some coding!
+
+    Every page has 4 effects: 
+    1. Animation that is played when section is on viewport
+    2. Animation that is playes when user is leaving outport
+    3. If user goes next section, we play exit animation  for next section
+    4. If user returns back to previous section, we play another exit animation.
+
+ Well, everything goes as we planned, but we will encounter a problem. Motion Framer     provides us a wrapper that plays exit animations only on components that get unmounted.
+
+Official docs : *AnimatePresence allows components to animate out when they're removed  from the React tree*
+
+Well,we have intersection-observer package installed, that provides us *useInView* hook.
+
+Official docs: 
+
+        // Use object destructing, so you don't need to remember the exact order
+        const { ref, inView, entry } = useInView(options);
+
+        // Or array destructing, making it easy to customize the field names
+        const [ref, inView, entry] = useInView(options);
+
+A good configuration and some custom hooks will help us to define when it is on viewport our section.
+
+*./hooks/useObserverHook.jsx*
+
+    import {useState, useEffect} from 'react'
+    import {useInView} from 'react-intersection-observer';
+    import debounce from 'lodash.debounce';
+
+    const useObserverEffect = (MAIN_DELAY, isFirst = false, isLast = false) => {
+
+        const [variant, setVariant] = useState("hidden");
+        const {ref, inView} = useInView({
+            threshold: 0.3,
+        });
+
+        // observable to detect current position of a slide
+        useEffect(() => {
+            if (inView) {
+                setVariant("visible");
+            } else setVariant("hidden");
+        }, [inView]);
+
+        const onMouseScroll = debounce((e) => {
+            if (e.deltaY > 0 && variant === "visible") setVariant(isLast ? "visible" : "exit")
+            if (e.deltaY < 0 && variant === "visible") setVariant(isFirst ? "visible" : "exitUp")
+        }, MAIN_DELAY)
+
+        useEffect(() => {
+            window.addEventListener('wheel', onMouseScroll)
+            return () => {
+                window.removeEventListener('wheel', onMouseScroll)
+            }
+        })
+
+        return {
+            ref, variant
+            }
+        }
+    export default useObserverEffect
+
+This hook provides us a ref for referencing it, and variant ( "hidden", "visible" , "exit" and "exitUp"). All of this variants we need for motion framer to animate our pages.
+Well we are nearly done. let's implement it to the first section!
