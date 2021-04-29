@@ -7,8 +7,35 @@
   box-sizing: inherit;
 }
 
+body {
+  overflow: hidden;
+}
+
 .app-container {
   width:100vw;
   height:100vh;
   background-color: aliceblue;
+}
+
+section {
+  width:100%;
+  height:100%;
+  overflow: hidden;
+  font-size: 60px;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#section1 {
+  background-color: bisque;
+}
+#section2 {
+  background-color: coral;
+}
+#section3 {
+  background-color: chartreuse;
+}
+#section4 {
+  background-color:  blueviolet;
 }

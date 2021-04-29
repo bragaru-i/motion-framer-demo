@@ -17,4 +17,61 @@ React implementation of the Intersection Observer API to tell you when an elemen
 npm i react-intersection-observer
 ```
 
-Well, lets do some clean up and start to code
+Well, lets do some clean up and start to code. 
+Screens attached, also first commit from repo will show you differencies
+
+Now, we start to count steps:
+1. Create Sections - Slides. That on every mouse-wheel will switch to another. Also a navigation that always stays fixed to top. 
+Giving them a width and height of 100%, also setting them id. id must be different for all sections 
+
+    *sections/Section1.jsx*
+
+    ```
+    import React from 'react'
+    
+    const Section1 = () => {
+        return (
+            <section id="section1">
+                Section 1
+            </section>
+        )
+    }
+    
+    export default Section1
+    
+    ```
+    add some styles to sections, straight in App.css (well in a real project, you have a different folder structure)
+
+    *./App.css*
+
+     
+        section {
+          width:100%;
+          height:100%;
+          overflow: hidden;
+          font-size: 60px;
+          color: black;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        #section1 {
+          background-color: bisque;
+        }
+
+        #section2 {
+          background-color: coral;
+        }
+
+        #section3 {
+          background-color: chartreuse;
+        }
+
+        #section4 {
+          background-color:  blueviolet;
+        }
+
+      
+
+1. 
